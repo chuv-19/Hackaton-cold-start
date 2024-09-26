@@ -33,9 +33,6 @@ def main(page: ft.Page):
         )
 
     def search(e):
-        if search_field.value == "123":
-            print("HAHAHAHHAHHAHHAH")
-            page.launch_url("pornhub.com")
         print(f"Searching for: {search_field.value}")
         
     # def toggle_sidebar(e):
