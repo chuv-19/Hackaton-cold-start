@@ -105,6 +105,13 @@ def main(page: ft.Page):
             sidebar,
             ft.Container(
                 content=ft.Column([
+                    ft.AspectRatio(
+                        ratio=16/9,
+                        content=ft.Image(
+                            src="https://picsum.photos/1280/720",
+                            fit=ft.ImageFit.COVER,
+                        ),
+                    ),
                     ft.ListTile(
                         title=ft.Text("Video Title", size=18, weight=ft.FontWeight.BOLD),
                         subtitle=ft.Text("Channel Name • 1M views • 2 days ago"),
