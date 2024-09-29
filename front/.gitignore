@@ -82,7 +82,6 @@ target/
 profile_default/
 ipython_config.py
 
-Screenshot 2024-09-23 at 19.40.08.png
 
 # pyenv
 #   For a library or package, you might want to ignore these files since the code is
@@ -153,6 +152,8 @@ dmypy.json
 
 # Cython debug symbols
 cython_debug/
+
+in.py
 
 # PyCharm
 #  JetBrains specific template is maintained in a separate JetBrains.gitignore that can

@@ -6,48 +6,35 @@ import flet as ft
 def main(page: ft.Page):
     page.title = "YouTube Clone"
     page.theme_mode = ft.ThemeMode.DARK
-    # page.bgcolor = ft.colors.GREY_900
-    page.padding = 10
+    page.padding = 0
     page.spacing = 0
-    
     pgw = page.width
     pgh = page.height
-    
-    thumbnail_dir = "assets"
-    thumbnail_files = [f for f in os.listdir(thumbnail_dir) if f.endswith(('.png', '.jpg', '.jpeg'))]
 
     def is_mobile():
-        return page.platform in (ft.PagePlatform.IOS, ft.PagePlatform.ANDROID)
+        return page.width < 600
 
-    if is_mobile():
-        page.navigation_bar = ft.NavigationBar(
-                destinations=[
-                    ft.NavigationBarDestination(icon=ft.icons.HOME, label="Home"),
-                    ft.NavigationBarDestination(icon=ft.icons.EXPLORE, label="Explore"),
-                    ft.NavigationBarDestination(
-                        icon=ft.icons.SUBSCRIPTIONS, label="Subscriptions"
-                    ),
-                    ft.NavigationBarDestination(
-                        icon=ft.icons.VIDEO_LIBRARY, label="Library"
-                    ),
-                ],
-            )
-        page.adaptive = True
-        
-    def create_layout():
+    def create_layout(content):
+        if content is None:
+            content = ft.Text("Error: Content not available")
+
         return ft.Column([
             create_app_bar(),
             ft.Row([
                 sidebar if not is_mobile() else ft.Container(width=0),
                 ft.VerticalDivider(width=1),
-                ft.Column([page.route_view], expand=True, scroll=ft.ScrollMode.AUTO),
+                ft.Container(
+                    content=content,
+                    expand=True,
+                    padding=10,
+                )
             ], expand=True),
             ft.NavigationBar(
                 destinations=[
-                    ft.NavigationDestination(icon=ft.icons.HOME, label="Home"),
-                    ft.NavigationDestination(icon=ft.icons.EXPLORE, label="Explore"),
-                    ft.NavigationDestination(icon=ft.icons.SUBSCRIPTIONS, label="Subscriptions"),
-                    ft.NavigationDestination(icon=ft.icons.VIDEO_LIBRARY, label="Library"),
+                    ft.NavigationBarDestination(icon=ft.icons.HOME, label="Home"),
+                    ft.NavigationBarDestination(icon=ft.icons.EXPLORE, label="Explore"),
+                    ft.NavigationBarDestination(icon=ft.icons.SUBSCRIPTIONS, label="Subscriptions"),
+                    ft.NavigationBarDestination(icon=ft.icons.VIDEO_LIBRARY, label="Library"),
                 ],
             ) if is_mobile() else None,
         ])
@@ -55,35 +42,27 @@ def main(page: ft.Page):
     def route_change(route):
         page.views.clear()
         if page.route == "/":
-            page.views.append(
-                ft.View(
-                    "/",
-                    [
-                        create_app_bar(),
-                        create_main_content(),
-                    ],
-                )
-            )
+            content = create_main_content()
         elif page.route == "/video":
-            page.views.append(
-                ft.View(
-                    "/video",
-                    [
-                        create_app_bar(),
-                        create_video_page(),
-                    ],
-                )
-            )
+            content = create_video_page()
         elif page.route == "/history":
-            page.views.append(
-                ft.View(
-                    "/history",
-                    [
-                        create_app_bar(),
-                        create_history_page(),
-                    ],
-                )
+            content = create_history_page()
+        else:
+            content = ft.Text("404 - Page not found")
+            
+        print(create_video_page,'\n')
+            
+        print(f"Content created: {type(content)}"+'\n')
+        print(f"Content details: {content}"+'\n')
+
+
+        page.views.append(
+            ft.View(
+                page.route,
+                [create_layout(content)],
+                scroll=ft.ScrollMode.AUTO
             )
+        )
         page.update()
 
     def view_pop(view):
@@ -105,13 +84,6 @@ def main(page: ft.Page):
             sidebar,
             ft.Container(
                 content=ft.Column([
-                    ft.AspectRatio(
-                        ratio=16/9,
-                        content=ft.Image(
-                            src="https://picsum.photos/1280/720",
-                            fit=ft.ImageFit.COVER,
-                        ),
-                    ),
                     ft.ListTile(
                         title=ft.Text("Video Title", size=18, weight=ft.FontWeight.BOLD),
                         subtitle=ft.Text("Channel Name • 1M views • 2 days ago"),
@@ -350,7 +322,7 @@ def main(page: ft.Page):
                 f"Video Title {i+1}",
                 f"Channel {i+1}",
                 f"{(i+1)*1000}",
-                f"./assets/{thumbnail_files[0]}",
+                f"https://picsum.photos/320/180?random={i+1}",
             )
         )
 
